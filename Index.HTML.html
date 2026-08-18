@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anggota Badan — เรียนรู้ส่วนต่าง ๆ ของร่างกายภาษามลายู</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Noto+Sans+Thai:wght@400;500;600;700&family=Noto+Serif+Thai:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FAF3E4;
+    --cream-2:#F1E7CE;
+    --ink:#20302B;
+    --teal:#14574C;
+    --teal-deep:#0C3A33;
+    --gold:#C99A3D;
+    --terracotta:#B85B37;
+    --green-ok:#2E7D4F;
+    --red-no:#C24B3A;
+    --amber:#C99A3D;
+    --card-shadow: 0 18px 40px -18px rgba(12,58,51,0.35);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 8% 0%, rgba(201,154,61,0.16), transparent 45%),
+      radial-gradient(circle at 100% 12%, rgba(184,91,55,0.14), transparent 40%),
+      var(--cream);
+    font-family:'Noto Sans Thai', sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    padding:28px 16px 60px;
+  }
+
+  .wrap{max-width:880px;margin:0 auto;}
+
+  /* ---- Tile border strip (Peranakan-tile inspired) ---- */
+  .tile-strip{
+    height:14px;
+    border-radius:8px;
+    margin-bottom:22px;
+    background:
+      repeating-linear-gradient(135deg,
+        var(--teal) 0 10px,
+        var(--gold) 10px 20px,
+        var(--terracotta) 20px 30px,
+        var(--teal) 30px 40px);
+    opacity:0.9;
+  }
+
+  header{
+    text-align:center;
+    margin-bottom:26px;
+  }
+  .eyebrow{
+    font-size:13px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--terracotta);
+    font-weight:600;
+    margin-bottom:8px;
+  }
+  h1{
+    font-family:'Noto Serif Thai','Fraunces',serif;
+    font-size:clamp(26px,4.4vw,38px);
+    line-height:1.25;
+    margin:0 0 10px;
+    color:var(--teal-deep);
+  }
+  h1 .malay{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    color:var(--terracotta);
+  }
+  .subtitle{
+    font-size:15px;
+    color:#4B5A54;
+    max-width:520px;
+    margin:0 auto;
+  }
+
+  /* ---- instructions ---- */
+  .instructions{
+    background:#fff;
+    border:1px solid rgba(20,87,76,0.1);
+    border-left:5px solid var(--gold);
+    border-radius:16px;
+    padding:18px 22px;
+    margin-bottom:24px;
+    box-shadow:0 10px 24px -16px rgba(12,58,51,0.25);
+  }
+  .instructions-label{
+    font-family:'Noto Serif Thai',serif;
+    font-weight:700;
+    font-size:16px;
+    color:var(--teal-deep);
+    margin-bottom:8px;
+  }
+  .instructions p{
+    font-size:14px;
+    line-height:1.7;
+    color:#3E4B45;
+    margin:0 0 10px;
+  }
+  .instructions .word-bank{
+    background:var(--cream);
+    border-radius:10px;
+    padding:8px 12px;
+    font-family:'Fraunces',serif;
+    font-size:14.5px;
+    color:var(--terracotta);
+  }
+  .instructions .wb-label{
+    display:block;
+    font-family:'Noto Sans Thai',sans-serif;
+    font-size:12px;
+    color:#7C8A83;
+    margin-bottom:3px;
+  }
+  .instructions-list{
+    margin:12px 0 0;
+    padding-left:20px;
+    font-size:13.5px;
+    line-height:1.75;
+    color:#4B5A54;
+  }
+  .instructions-list li{margin-bottom:4px;}
+
+  /* ---- progress ---- */
+  .progress-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    justify-content:center;
+    margin:22px 0 8px;
+    flex-wrap:wrap;
+  }
+  .dot{
+    width:26px;height:26px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:700;
+    background:#fff;
+    border:2px solid var(--cream-2);
+    color:#9AA6A0;
+    transition:all .25s ease;
+  }
+  .dot.current{border-color:var(--gold);color:var(--teal-deep);transform:scale(1.12);box-shadow:0 4px 10px rgba(201,154,61,.35);}
+  .dot.correct{background:var(--green-ok);border-color:var(--green-ok);color:#fff;}
+  .dot.wrong{background:var(--red-no);border-color:var(--red-no);color:#fff;}
+
+  .score-line{
+    text-align:center;
+    font-size:13px;
+    color:#5C6B65;
+    margin-bottom:20px;
+  }
+  .score-line b{color:var(--teal-deep);}
+
+  /* ---- main card ---- */
+  .card{
+    background:#fff;
+    border-radius:22px;
+    box-shadow:var(--card-shadow);
+    padding:clamp(20px,4vw,36px);
+    border:1px solid rgba(20,87,76,0.08);
+  }
+
+  .quiz-grid{
+    display:grid;
+    grid-template-columns: 220px 1fr;
+    gap:28px;
+    align-items:center;
+  }
+  @media (max-width:600px){
+    .quiz-grid{grid-template-columns:1fr; justify-items:center;}
+  }
+
+  /* ---- figure ---- */
+  .figure-box{
+    position:relative;
+    width:200px;
+  }
+  .figure-box svg{width:100%;height:auto;display:block;}
+  .highlight{
+    fill:none;
+    stroke:var(--gold);
+    stroke-width:4;
+    opacity:0;
+    transform-origin:center;
+  }
+  .highlight.active{
+    opacity:1;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ stroke-opacity:.55; stroke-width:4; }
+    50%{ stroke-opacity:1; stroke-width:7; }
+  }
+
+  .q-number{
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--terracotta);
+    font-weight:700;
+    margin-bottom:6px;
+  }
+  .q-thai{
+    font-family:'Noto Serif Thai',serif;
+    font-size:clamp(22px,3.4vw,28px);
+    color:var(--teal-deep);
+    font-weight:600;
+    margin:0 0 4px;
+  }
+  .q-hint-label{
+    font-size:13px;
+    color:#7C8A83;
+    margin-bottom:18px;
+  }
+
+  .choices{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .choice-btn{
+    font-family:'Fraunces',serif;
+    font-size:17px;
+    padding:10px 18px;
+    border-radius:12px;
+    border:2px solid var(--cream-2);
+    background:var(--cream);
+    color:var(--teal-deep);
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .choice-btn:hover:not(:disabled){
+    border-color:var(--gold);
+    transform:translateY(-2px);
+  }
+  .choice-btn:disabled{cursor:default;}
+  .choice-btn.correct{background:var(--green-ok);border-color:var(--green-ok);color:#fff;}
+  .choice-btn.wrong{background:var(--red-no);border-color:var(--red-no);color:#fff;}
+  .choice-btn.reveal-correct{border-color:var(--green-ok); box-shadow:0 0 0 2px rgba(46,125,79,.25) inset;}
+
+  .action-row{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    margin-top:6px;
+  }
+  .hint-btn, .next-btn{
+    font-family:'Noto Sans Thai',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    padding:9px 16px;
+    border-radius:999px;
+    cursor:pointer;
+    border:none;
+  }
+  .hint-btn{
+    background:var(--cream-2);
+    color:var(--teal-deep);
+  }
+  .hint-btn:hover{background:#e8dcb8;}
+  .next-btn{
+    background:var(--teal);
+    color:#fff;
+    display:none;
+  }
+  .next-btn:hover{background:var(--teal-deep);}
+  .next-btn.show{display:inline-block;}
+
+  .hint-box{
+    display:none;
+    font-size:13.5px;
+    background:#FFF7E6;
+    border:1px dashed var(--amber);
+    border-radius:12px;
+    padding:10px 14px;
+    margin-top:10px;
+    color:#6E5620;
+  }
+  .hint-box.show{display:block;}
+
+  .feedback{
+    display:none;
+    margin-top:16px;
+    border-radius:14px;
+    padding:14px 16px;
+    font-size:14.5px;
+    line-height:1.6;
+  }
+  .feedback.show{display:block;}
+  .feedback.ok{background:#EAF6EE; border:1px solid rgba(46,125,79,.35); color:#1E5C38;}
+  .feedback.no{background:#FCEDE9; border:1px solid rgba(194,75,58,.35); color:#8C3626;}
+  .feedback .tip{
+    display:block;
+    margin-top:8px;
+    font-size:13px;
+    color:#5C6B65;
+    font-style:italic;
+  }
+
+  /* ---- final screen ---- */
+  .final{
+    display:none;
+    text-align:center;
+    padding:10px 6px;
+  }
+  .final.show{display:block;}
+  .final .emoji{font-size:52px;}
+  .final h2{
+    font-family:'Noto Serif Thai',serif;
+    color:var(--teal-deep);
+    font-size:26px;
+    margin:6px 0 4px;
+  }
+  .final p{color:#4B5A54;font-size:14.5px;margin:0 0 20px;}
+  .final .score-big{
+    font-family:'Fraunces',serif;
+    font-size:44px;
+    color:var(--terracotta);
+    margin:6px 0 18px;
+  }
+  .restart-btn{
+    background:var(--terracotta);
+    color:#fff;
+    border:none;
+    padding:12px 26px;
+    border-radius:999px;
+    font-family:'Noto Sans Thai',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+  }
+  .restart-btn:hover{background:#9c4a2c;}
+
+  footer{
+    text-align:center;
+    margin-top:24px;
+    font-size:12px;
+    color:#9AA6A0;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="tile-strip"></div>
+
+  <header>
+    <div class="eyebrow">Latihan Interaktif · ใบงานที่ 1 แบบฝึกหัดเชิงโต้ตอบ</div>
+    <h1>Anggota Badan <span class="malay">— ส่วนต่าง ๆ ของร่างกาย</span></h1>
+  </header>
+
+  <div class="instructions">
+    <div class="instructions-label">📋 คำชี้แจง</div>
+    <p>
+      แบบฝึกหัดนี้ดัดแปลงมาจาก <b>ใบงานที่ 1: เติมคำศัพท์ภาษามลายู</b> เรื่อง Anggota Badan
+      โดยจากเดิมที่ให้เติมคำศัพท์ลงในช่องว่าง จะเปลี่ยนเป็น
+      <b>เลือกคำศัพท์ภาษามลายูที่ถูกต้อง</b> ให้ตรงกับความหมายภาษาไทยที่กำหนดให้ทีละข้อ จนครบทั้ง 10 ข้อ
+    </p>
+    <p class="word-bank">
+      <span class="wb-label">คลังคำศัพท์ที่ใช้ในแบบฝึกหัด:</span>
+      mata · hidung · mulut · telinga · tangan · kaki · kepala · rambut · gigi · jari
+    </p>
+    <ul class="instructions-list">
+      <li>ดูคำภาษาไทยที่โจทย์กำหนด แล้วแตะเลือกคำภาษามลายูที่มีความหมายตรงกันจากตัวเลือก 4 คำ</li>
+      <li>รูปคนด้านซ้ายจะ<b>เรืองแสงบริเวณอวัยวะ</b>ที่ตรงกับคำถามข้อนั้น ๆ เพื่อช่วยให้เห็นภาพชัดเจนขึ้น</li>
+      <li>หากไม่แน่ใจ กดปุ่ม <b>💡 ขอคำใบ้</b> ได้ก่อนตอบ (ใช้ได้ 1 ครั้งต่อข้อ)</li>
+      <li>เมื่อเลือกคำตอบแล้วจะไม่สามารถแก้ไขคำตอบของข้อนั้นได้ ระบบจะแสดงผลถูก/ผิดและเฉลยทันที พร้อมเคล็ดลับช่วยจำ</li>
+      <li>ทำครบทั้ง 10 ข้อ แล้วดูสรุปคะแนนรวมในหน้าสุดท้าย</li>
+    </ul>
+  </div>
+
+  <div class="progress-row" id="progressRow"></div>
+  <div class="score-line" id="scoreLine">คะแนน: <b><span id="scoreNow">0</span>/10</b></div>
+
+  <div class="card">
+    <!-- QUIZ VIEW -->
+    <div id="quizView">
+      <div class="quiz-grid">
+        <div class="figure-box">
+          <svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
+            <!-- body -->
+            <ellipse cx="100" cy="70" rx="34" ry="38" fill="#F6E3C6" stroke="#5C4322" stroke-width="2"/>
+            <path d="M66 96 Q60 60 100 55 Q140 60 134 96" fill="#5C4322" id="part-rambut"/>
+            <circle cx="86" cy="70" r="4.5" fill="#20302B" id="part-mata-l"/>
+            <circle cx="114" cy="70" r="4.5" fill="#20302B" id="part-mata-r"/>
+            <path d="M98 76 Q100 86 104 86" fill="none" stroke="#8a5b3a" stroke-width="2.5" stroke-linecap="round" id="part-hidung"/>
+            <path d="M88 96 Q100 104 112 96" fill="none" stroke="#8a3b3b" stroke-width="3" stroke-linecap="round" id="part-mulut"/>
+            <rect x="94" y="98" width="12" height="3" rx="1.4" fill="#fff" id="part-gigi"/>
+            <ellipse cx="63" cy="70" rx="6" ry="9" fill="#F6E3C6" stroke="#5C4322" stroke-width="2" id="part-telinga-l"/>
+            <ellipse cx="137" cy="70" rx="6" ry="9" fill="#F6E3C6" stroke="#5C4322" stroke-width="2" id="part-telinga-r"/>
+            <ellipse cx="100" cy="42" rx="8" ry="6" fill="#20302B" id="part-kepala"/>
+
+            <!-- torso + limbs -->
+            <path d="M70 108 Q100 100 130 108 L142 200 Q100 216 58 200 Z" fill="#B85B37" stroke="#7c3c22" stroke-width="2"/>
+            <path d="M58 118 L28 180 L40 190 L66 138 Z" fill="#F6E3C6" stroke="#5C4322" stroke-width="2"/>
+            <path d="M142 118 L172 180 L160 190 L134 138 Z" fill="#F6E3C6" stroke="#5C4322" stroke-width="2"/>
+            <circle cx="32" cy="186" r="9" fill="#F6E3C6" stroke="#5C4322" stroke-width="2" id="part-tangan-l"/>
+            <circle cx="168" cy="186" r="9" fill="#F6E3C6" stroke="#5C4322" stroke-width="2" id="part-tangan-r"/>
+            <g id="part-jari">
+              <rect x="24" y="192" width="3" height="10" rx="1.5" fill="#F6E3C6" stroke="#5C4322" stroke-width="1"/>
+              <rect x="29" y="194" width="3" height="11" rx="1.5" fill="#F6E3C6" stroke="#5C4322" stroke-width="1"/>
+              <rect x="34" y="192" width="3" height="10" rx="1.5" fill="#F6E3C6" stroke="#5C4322" stroke-width="1"/>
+            </g>
+
+            <path d="M62 198 L54 300 L74 300 L84 220 Z" fill="#14574C" stroke="#0C3A33" stroke-width="2"/>
+            <path d="M138 198 L146 300 L126 300 L116 220 Z" fill="#14574C" stroke="#0C3A33" stroke-width="2"/>
+            <ellipse cx="64" cy="304" rx="12" ry="7" fill="#20302B" id="part-kaki-l"/>
+            <ellipse cx="136" cy="304" rx="12" ry="7" fill="#20302B" id="part-kaki-r"/>
+
+            <!-- highlight rings placed over each region -->
+            <circle class="highlight" data-part="mata" cx="100" cy="70" r="26"/>
+            <circle class="highlight" data-part="hidung" cx="100" cy="82" r="14"/>
+            <circle class="highlight" data-part="mulut" cx="100" cy="98" r="16"/>
+            <circle class="highlight" data-part="telinga" cx="100" cy="70" r="46"/>
+            <circle class="highlight" data-part="tangan" cx="100" cy="186" r="76"/>
+            <circle class="highlight" data-part="kaki" cx="100" cy="300" r="46"/>
+            <circle class="highlight" data-part="kepala" cx="100" cy="55" r="42"/>
+            <circle class="highlight" data-part="rambut" cx="100" cy="60" r="42"/>
+            <circle class="highlight" data-part="gigi" cx="100" cy="99" r="10"/>
+            <circle class="highlight" data-part="jari" cx="30" cy="197" r="14"/>
+          </svg>
+        </div>
+
+        <div class="q-panel">
+          <div class="q-number" id="qNumber">ข้อที่ 1 / 10</div>
+          <p class="q-thai" id="qThai">ตา</p>
+          <p class="q-hint-label">เลือกคำศัพท์ภาษามลายูที่ตรงกับความหมาย</p>
+
+          <div class="choices" id="choices"></div>
+
+          <div class="action-row">
+            <button class="hint-btn" id="hintBtn">💡 ขอคำใบ้</button>
+            <button class="next-btn" id="nextBtn">ข้อถัดไป →</button>
+          </div>
+
+          <div class="hint-box" id="hintBox"></div>
+          <div class="feedback" id="feedback"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FINAL VIEW -->
+    <div id="finalView" class="final">
+      <div class="emoji" id="finalEmoji">🎉</div>
+      <h2 id="finalTitle">Tahniah! เก่งมาก!</h2>
+      <div class="score-big"><span id="finalScore">10</span>/10</div>
+      <p id="finalMsg">คุณสามารถจับคู่คำศัพท์ Anggota Badan ได้ถูกต้องทั้งหมด!</p>
+      <button class="restart-btn" id="restartBtn">🔁 ทำแบบฝึกหัดอีกครั้ง</button>
+    </div>
+  </div>
+
+  <footer>Latihan kosa kata · แบบฝึกหัดคำศัพท์ภาษามลายู — Anggota Badan</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  { thai:"ตา", answer:"mata", part:"mata",
+    hint:"อวัยวะคู่นี้อยู่บนใบหน้า ใช้สำหรับ “มอง” — ในภาษาอังกฤษออกเสียงคล้าย “mata-dor” (นักสู้วัวกระทิง) ตัดครึ่งแรกออกก็ได้คำตอบ!",
+    tip:"เคล็ดลับ: “mata” แปลว่าตา ยังพบในคำว่า “matahari” (ดวงอาทิตย์) ที่แปลตรงตัวว่า “ตาของฟ้า/วัน” น่าจำมาก!" },
+  { thai:"จมูก", answer:"hidung", part:"hidung",
+    hint:"คำนี้ขึ้นต้นด้วยเสียง “ฮี” และอวัยวะนี้อยู่กึ่งกลางใบหน้า ใช้สำหรับดมกลิ่น",
+    tip:"เคล็ดลับ: ลองนึกภาพคนกำลังจาม “ฮี้ดุง!” แล้วจับจมูก จะช่วยให้จำคำว่า hidung ได้แม่นขึ้น" },
+  { thai:"ปาก", answer:"mulut", part:"mulut",
+    hint:"อวัยวะนี้อยู่ใต้จมูก ใช้พูดและกิน คำนี้ลงท้ายด้วยเสียง “ลุต”",
+    tip:"เคล็ดลับ: mulut ออกเสียงคล้ายคำว่า “มู่หลุด” ลองนึกภาพปากที่อ้าจนของหลุดออกมา" },
+  { thai:"หู", answer:"telinga", part:"telinga",
+    hint:"อวัยวะคู่นี้อยู่ข้างศีรษะ ใช้สำหรับฟัง คำนี้ยาวกว่าคำอื่น ๆ ในหมวดใบหน้า",
+    tip:"เคล็ดลับ: telinga มีคำว่า “linga” คล้ายเสียงกระดิ่งเบา ๆ ลองจำว่า “te-LING-a” ก็เหมือนได้ยินเสียงกริ๊ง ๆ" },
+  { thai:"มือ", answer:"tangan", part:"tangan",
+    hint:"อวัยวะนี้อยู่ปลายแขน ใช้หยิบจับสิ่งของ คำนี้ใกล้เคียงกับคำว่า “tang” ที่แปลว่าคีมในบางภาษา",
+    tip:"เคล็ดลับ: tangan ฟังดูคล้าย “ตะ-งัน” นึกภาพมือที่กำลัง “คว้า” ของบางอย่างไว้แน่น" },
+  { thai:"เท้า/ขา", answer:"kaki", part:"kaki",
+    hint:"คำสั้น ๆ ออกเสียงซ้ำสองพยางค์คล้ายกัน ใช้เดินและยืน",
+    tip:"เคล็ดลับ: kaki ออกเสียงคล้าย “ขา-ขี่” ลองนึกถึงคนที่ใช้ขาปั่นจักรยาน (ขี่) ก็จะจำคำนี้ได้ไม่ลืม" },
+  { thai:"ศีรษะ", answer:"kepala", part:"kepala",
+    hint:"อวัยวะส่วนบนสุดของร่างกาย บรรจุสมองไว้ข้างใน คำนี้ขึ้นต้นด้วย “ke-”",
+    tip:"เคล็ดลับ: kepala พ้องกับคำว่า “กะโหลก” ในภาษาไทย (kepala–กะโหลก) เสียงใกล้กันจนจำง่าย" },
+  { thai:"ผม", answer:"rambut", part:"rambut",
+    hint:"สิ่งที่ขึ้นอยู่บนศีรษะ มีหลายทรง หลายสี คำนี้มีเสียง “บุต” อยู่ตรงกลาง",
+    tip:"เคล็ดลับ: rambut พ้องเสียงกับ “แรม-บุด” ลองนึกภาพเส้นผมที่ปลิวไสวยามค่ำคืน (แรม)" },
+  { thai:"ฟัน", answer:"gigi", part:"gigi",
+    hint:"อยู่ในปาก ใช้เคี้ยวอาหาร คำนี้ออกเสียงซ้ำพยางค์เดียวกันสองครั้ง สั้นและจำง่ายที่สุด",
+    tip:"เคล็ดลับ: gigi ออกเสียงคล้าย “กี-กี” นึกภาพฟันขาว ๆ เรียงกันเป็นแถว “กิ๊บ กิ๊บ”" },
+  { thai:"นิ้วมือ", answer:"jari", part:"jari",
+    hint:"ส่วนปลายของมือ มี 5 ส่วนในแต่ละข้าง ใช้หยิบของชิ้นเล็ก ๆ",
+    tip:"เคล็ดลับ: jari ฟังดูคล้าย “จะรี่” ลองนึกภาพนิ้วมือที่ “รี่” ไปกดปุ่มอย่างรวดเร็ว" },
+];
+
+const WORD_BANK = ["mata","hidung","mulut","telinga","tangan","kaki","kepala","rambut","gigi","jari"];
+
+function shuffledChoices(correct){
+  const distractors = WORD_BANK.filter(w => w !== correct);
+  for(let i=distractors.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [distractors[i],distractors[j]] = [distractors[j],distractors[i]];
+  }
+  const options = [correct, ...distractors.slice(0,3)];
+  for(let i=options.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [options[i],options[j]] = [options[j],options[i]];
+  }
+  return options;
+}
+
+let current = 0;
+let score = 0;
+let answered = false;
+const results = new Array(QUESTIONS.length).fill(null); // null | true | false
+
+const progressRow = document.getElementById('progressRow');
+const scoreNowEl = document.getElementById('scoreNow');
+const qNumberEl = document.getElementById('qNumber');
+const qThaiEl = document.getElementById('qThai');
+const choicesEl = document.getElementById('choices');
+const hintBtn = document.getElementById('hintBtn');
+const hintBox = document.getElementById('hintBox');
+const feedbackEl = document.getElementById('feedback');
+const nextBtn = document.getElementById('nextBtn');
+const quizView = document.getElementById('quizView');
+const finalView = document.getElementById('finalView');
+
+function buildProgress(){
+  progressRow.innerHTML = '';
+  QUESTIONS.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    d.textContent = i+1;
+    d.id = 'dot-'+i;
+    progressRow.appendChild(d);
+  });
+}
+
+function updateProgress(){
+  QUESTIONS.forEach((_, i) => {
+    const d = document.getElementById('dot-'+i);
+    d.classList.remove('current','correct','wrong');
+    if(results[i] === true) d.classList.add('correct');
+    else if(results[i] === false) d.classList.add('wrong');
+    if(i === current) d.classList.add('current');
+  });
+}
+
+function setHighlight(part){
+  document.querySelectorAll('.highlight').forEach(h => h.classList.remove('active'));
+  document.querySelectorAll('.highlight[data-part="'+part+'"]').forEach(h => h.classList.add('active'));
+}
+
+function loadQuestion(){
+  answered = false;
+  const q = QUESTIONS[current];
+  qNumberEl.textContent = `ข้อที่ ${current+1} / ${QUESTIONS.length}`;
+  qThaiEl.textContent = q.thai;
+  setHighlight(q.part);
+
+  hintBox.classList.remove('show');
+  hintBox.textContent = '';
+  feedbackEl.classList.remove('show','ok','no');
+  feedbackEl.innerHTML = '';
+  nextBtn.classList.remove('show');
+  hintBtn.disabled = false;
+  hintBtn.style.opacity = 1;
+
+  const opts = shuffledChoices(q.answer);
+  choicesEl.innerHTML = '';
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = opt;
+    btn.addEventListener('click', () => handleAnswer(opt, btn));
+    choicesEl.appendChild(btn);
+  });
+
+  updateProgress();
+  scoreNowEl.textContent = score;
+}
+
+function handleAnswer(choice, btnEl){
+  if(answered) return;
+  answered = true;
+  const q = QUESTIONS[current];
+  const correct = choice === q.answer;
+
+  document.querySelectorAll('.choice-btn').forEach(b => {
+    b.disabled = true;
+    if(b.textContent === q.answer) b.classList.add(correct ? 'correct' : 'reveal-correct');
+  });
+  if(!correct) btnEl.classList.add('wrong');
+
+  results[current] = correct;
+  if(correct) score++;
+  scoreNowEl.textContent = score;
+  updateProgress();
+
+  feedbackEl.classList.add('show', correct ? 'ok' : 'no');
+  if(correct){
+    feedbackEl.innerHTML = `🟢 Betul! “${q.answer}” แปลว่า “${q.thai}” ในภาษามลายู เก่งมาก!
+      <span class="tip">${q.tip}</span>`;
+  } else {
+    feedbackEl.innerHTML = `🔴 Belum tepat. คุณเลือก “${choice}” แต่คำตอบที่ถูกต้องคือ “${q.answer}” = ${q.thai}
+      <span class="tip">${q.tip}</span>`;
+  }
+
+  hintBtn.disabled = true;
+  hintBtn.style.opacity = 0.5;
+  nextBtn.classList.add('show');
+  nextBtn.textContent = current === QUESTIONS.length-1 ? 'ดูผลคะแนน →' : 'ข้อถัดไป →';
+}
+
+hintBtn.addEventListener('click', () => {
+  const q = QUESTIONS[current];
+  hintBox.textContent = '💡 ' + q.hint;
+  hintBox.classList.add('show');
+});
+
+nextBtn.addEventListener('click', () => {
+  if(current < QUESTIONS.length - 1){
+    current++;
+    loadQuestion();
+  } else {
+    showFinal();
+  }
+});
+
+function showFinal(){
+  quizView.style.display = 'none';
+  finalView.classList.add('show');
+  document.getElementById('finalScore').textContent = score;
+  const emoji = document.getElementById('finalEmoji');
+  const title = document.getElementById('finalTitle');
+  const msg = document.getElementById('finalMsg');
+
+  if(score === QUESTIONS.length){
+    emoji.textContent = '🎉';
+    title.textContent = 'Tahniah! Semua jawapan betul!';
+    msg.textContent = 'คุณสามารถระบุคำศัพท์ Anggota Badan ได้ถูกต้องทั้งหมด 10 ข้อ เก่งมาก ๆ เลย!';
+  } else if(score >= QUESTIONS.length * 0.7){
+    emoji.textContent = '🌟';
+    title.textContent = 'Bagus! เก่งมากแล้ว';
+    msg.textContent = `ทำได้ ${score} จาก ${QUESTIONS.length} ข้อ ลองทบทวนคำที่ตอบผิดอีกสักนิดแล้วมาลองใหม่นะ`;
+  } else {
+    emoji.textContent = '💪';
+    title.textContent = 'Cuba lagi! ลองอีกครั้งนะ';
+    msg.textContent = `ทำได้ ${score} จาก ${QUESTIONS.length} ข้อ ทบทวนคำศัพท์แล้วมาฝึกกันใหม่ คุณทำได้แน่นอน!`;
+  }
+}
+
+document.getElementById('restartBtn').addEventListener('click', () => {
+  current = 0; score = 0; results.fill(null);
+  finalView.classList.remove('show');
+  quizView.style.display = 'block';
+  loadQuestion();
+});
+
+buildProgress();
+loadQuestion();
+</script>
+</body>
+</html>
